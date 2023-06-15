@@ -41,11 +41,10 @@ class AppService {
 
     if (filters.studentsCount) {
       if (filters.studentsCount.length === 2) {
-        const [minCount, maxCount] = filters.studentsCount;
-        query.havingRaw('COUNT(DISTINCT students.id) BETWEEN ? AND ?', [
-          parseInt(minCount),
-          parseInt(maxCount),
-        ]);
+        query.havingRaw(
+          'COUNT(DISTINCT students.id) BETWEEN ? AND ?',
+          filters.studentsCount,
+        );
       } else {
         query.havingRaw(
           'COUNT(DISTINCT students.id) = ?',

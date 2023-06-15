@@ -1,5 +1,4 @@
 import { appService } from '../service/app-service.js';
-import { isDateValid } from '../utils/is-date-valid.js';
 import { STATUS_CODES } from '../messages/status-codes.js';
 
 class AppController {
