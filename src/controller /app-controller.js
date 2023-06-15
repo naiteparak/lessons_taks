@@ -1,5 +1,6 @@
-import { appService } from '../services /app-service.js';
+import { appService } from '../service/app-service.js';
 import { isDateValid } from '../utils/is-date-valid.js';
+import { STATUS_CODES } from '../messages/status-codes.js';
 
 class AppController {
   async getLessons(req, res) {
@@ -7,19 +8,9 @@ class AppController {
       const { date, status, teacherIds, studentsCount, page, lessonsPerPage } =
         req.query;
 
-      let dates;
-      if (date) {
-        dates = date.split(',');
-        if (isDateValid(dates)) {
-          const error = new Error('Invalid input for date');
-          error.statusCode = 400;
-          return res.status(error.statusCode).json({ error: error.message });
-        }
-      }
-
       const lessons = await appService.getLessons(
         {
-          dates,
+          date,
           status,
           teacherIds,
           studentsCount,
@@ -28,9 +19,11 @@ class AppController {
         lessonsPerPage,
       );
 
-      res.status(200).send(lessons);
+      res.status(STATUS_CODES.OK).send(lessons);
     } catch (error) {
-      res.status(error.statusCode || 500).json({ error: error.message });
+      res
+        .status(error.statusCode || STATUS_CODES.INTERNAL_SERVER_ERROR)
+        .json({ error: error.message });
     }
   }
 }

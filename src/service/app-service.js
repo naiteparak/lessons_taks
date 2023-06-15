@@ -10,9 +10,7 @@ class AppService {
       .select(
         'lessons.*',
         knex.raw(
-          knex.raw(
-            'COUNT(DISTINCT CASE WHEN lesson_students.visit = true THEN students.id END) AS visitCount',
-          ),
+          'CAST(COUNT(DISTINCT CASE WHEN lesson_students.visit = true THEN students.id END) AS INTEGER) AS visitCount',
         ),
         knex.raw(`
           ARRAY_AGG(DISTINCT jsonb_build_object('id', students.id, 'name', students.name, 'visit', lesson_students.visit))
@@ -26,11 +24,11 @@ class AppService {
       .groupBy('lessons.id', 'lessons.date', 'lessons.title', 'lessons.status')
       .orderBy('lessons.date');
 
-    if (filters.dates) {
-      if (filters.dates.length === 1)
-        query.where('lessons.date', filters.dates[0]);
-      else if (filters.dates.length === 2)
-        query.whereBetween('lessons.date', filters.dates);
+    if (filters.date) {
+      if (filters.date.length === 1)
+        query.where('lessons.date', filters.date[0]);
+      else if (filters.date.length === 2)
+        query.whereBetween('lessons.date', filters.date);
     }
 
     if (filters.status) {
@@ -38,21 +36,21 @@ class AppService {
     }
 
     if (filters.teacherIds) {
-      const teacherIds = filters.teacherIds.split(','); //TODO
-      query.whereIn('teachers.id', teacherIds);
+      query.whereIn('teachers.id', filters.teacherIds);
     }
 
     if (filters.studentsCount) {
-      if (filters.studentsCount.includes(',')) {
-        //TODO
-        const [minCount, maxCount] = filters.studentsCount.split(',');
+      if (filters.studentsCount.length === 2) {
+        const [minCount, maxCount] = filters.studentsCount;
         query.havingRaw('COUNT(DISTINCT students.id) BETWEEN ? AND ?', [
           parseInt(minCount),
           parseInt(maxCount),
         ]);
       } else {
-        const exactCount = parseInt(filters.studentsCount);
-        query.havingRaw('COUNT(DISTINCT students.id) = ?', exactCount);
+        query.havingRaw(
+          'COUNT(DISTINCT students.id) = ?',
+          filters.studentsCount,
+        );
       }
     }
 
