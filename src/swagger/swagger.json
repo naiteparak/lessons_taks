@@ -1,0 +1,176 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Lesson API",
+    "version": "1.0.0",
+    "description": "API documentation for Lesson application"
+  },
+  "tags": [
+    {
+    "name": "Lessons"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Lessons"],
+        "summary": "Get Lessons",
+        "description": "Retrieve lessons based on provided filters",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "description": "Filter lessons by date YYYY-MM-DD (date or comma-separated list of dates)",
+            "schema": {
+              "type": "string",
+              "default": "2019-05-10, 2019-10-11"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "description": "Filter lessons by status (0 or 1)",
+            "schema": {
+              "type": "integer",
+              "enum": [0, 1]
+            }
+          },
+          {
+            "in": "query",
+            "name": "teacherIds",
+            "description": "Filter lessons by teacher IDs (id or comma-separated list of ids)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "studentsCount",
+            "description": "Filter lessons by students count (integer or comma-separated list of integers)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "Page number for pagination (integer)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "lessonsPerPage",
+            "description": "Number of lessons per page (integer)",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Lesson"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Lesson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "visitCount": {
+            "type": "integer"
+          },
+          "students": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "visit": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["id", "name", "visit"]
+            }
+          },
+          "teachers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": ["id", "name"]
+            }
+          }
+        },
+        "required": ["id", "date", "title", "status", "visitCount", "students", "teachers"]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
