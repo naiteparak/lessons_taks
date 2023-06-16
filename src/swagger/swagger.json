@@ -7,7 +7,7 @@
   },
   "tags": [
     {
-    "name": "Lessons"
+      "name": "Lessons"
     }
   ],
   "paths": {
@@ -76,7 +76,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Lesson"
+                    "$ref": "#/components/schemas/Lesson-get"
                   }
                 }
               }
@@ -104,11 +104,51 @@
           }
         }
       }
+    },
+    "/lessons": {
+      "post": {
+        "tags": ["Lessons"],
+        "summary": "Create Lessons",
+        "description": "Create one or multiple lessons",
+        "requestBody": {
+          "description": "JSON object containing lesson data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Lessons-create"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lessons-create-response"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
-      "Lesson": {
+      "Lesson-get": {
         "type": "object",
         "properties": {
           "id": {
@@ -168,6 +208,49 @@
         "properties": {
           "error": {
             "type": "string"
+          }
+        }
+      },
+      "Lessons-create": {
+        "type": "object",
+        "properties": {
+          "teacherIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "days": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "firstDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "lessonsCount": {
+            "type": "integer"
+          },
+          "lastDate": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": ["teacherIds", "title", "days", "firstDate"]
+      },
+      "Lessons-create-response": {
+        "type": "object",
+        "properties": {
+          "lessonIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
           }
         }
       }
