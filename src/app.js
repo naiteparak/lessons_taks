@@ -4,6 +4,7 @@ import { appRouter } from './router/app-router.js';
 import pg from 'pg';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger/swagger.json' assert { type: 'json' };
+import { logger } from './configs/logger.js';
 
 // Custom DATE parser for pg module, see https://github.com/brianc/node-postgres/issues/818
 pg.types.setTypeParser(1082, (value) => {
@@ -19,5 +20,6 @@ app
   .use(appRouter);
 
 app.listen(port, () => {
-  console.log(`App running on http://localhost:${port}`);
+  logger.log('info', `App successfully run on http://localhost:${port}`);
+  console.log(`App docs on http://localhost:${port}/api-docs`);
 });
