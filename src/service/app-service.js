@@ -24,12 +24,10 @@ class AppService {
       .groupBy('lessons.id', 'lessons.date', 'lessons.title', 'lessons.status')
       .orderBy('lessons.date');
 
-    if (filters.date) {
-      if (filters.date.length === 1)
-        query.where('lessons.date', filters.date[0]);
-      else if (filters.date.length === 2)
-        query.whereBetween('lessons.date', filters.date);
-    }
+    if (filters.date && filters.date.length === 1)
+      query.where('lessons.date', filters.date[0]);
+    else if (filters.date && filters.date.length === 2)
+      query.whereBetween('lessons.date', filters.date);
 
     if (filters.status) {
       query.where('lessons.status', filters.status);
@@ -39,18 +37,13 @@ class AppService {
       query.whereIn('teachers.id', filters.teacherIds);
     }
 
-    if (filters.studentsCount) {
-      if (filters.studentsCount.length === 2) {
-        query.havingRaw(
-          'COUNT(DISTINCT students.id) BETWEEN ? AND ?',
-          filters.studentsCount,
-        );
-      } else {
-        query.havingRaw(
-          'COUNT(DISTINCT students.id) = ?',
-          filters.studentsCount,
-        );
-      }
+    if (filters.studentsCount && filters.studentsCount.length === 2) {
+      query.havingRaw(
+        'COUNT(DISTINCT students.id) BETWEEN ? AND ?',
+        filters.studentsCount,
+      );
+    } else if (filters.studentsCount && filters.studentsCount.length === 1) {
+      query.havingRaw('COUNT(DISTINCT students.id) = ?', filters.studentsCount);
     }
 
     if (page && lessonsPerPage) {
