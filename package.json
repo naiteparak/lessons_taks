@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "docker-build": "docker-compose up",
     "start": "nodemon src/app.js"
   },
   "type": "module",
