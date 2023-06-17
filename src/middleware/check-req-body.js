@@ -2,8 +2,9 @@ import { STATUS_CODES } from '../responses/status-codes.js';
 import { ERROR_MESSAGES } from '../responses/messages.js';
 import { isDateValid } from '../utils/is-date-valid.js';
 import { logger } from '../configs/logger.js';
+import { checkTeacherId } from '../utils/check-teacher-id.js';
 
-export const checkReqBody = function (req, res, next) {
+export const checkReqBody = async function (req, res, next) {
   const reqBody = req.body;
   if (
     (reqBody.lessonsCount && reqBody.lastDate) ||
@@ -73,6 +74,17 @@ export const checkReqBody = function (req, res, next) {
     return res
       .status(STATUS_CODES.BAD_REQUEST)
       .json({ error: ERROR_MESSAGES.INVALID_TEACHERS_IDS_OR_DAYS });
+  }
+
+  for (const id of reqBody.teacherIds) {
+    if (!(await checkTeacherId('teachers', id))) {
+      logger.log('error', {
+        error: `${ERROR_MESSAGES.INVALID_TEACHER_ID} ${id}`,
+      });
+      return res
+        .status(STATUS_CODES.BAD_REQUEST)
+        .json({ error: `${ERROR_MESSAGES.INVALID_TEACHER_ID} ${id}` });
+    }
   }
 
   next();

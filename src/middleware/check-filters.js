@@ -37,11 +37,11 @@ export const checkFilters = function (req, res, next) {
         .match(/^(\d+(,\s*\d+)?|,\s*\d+|\d+(,\s*\d+)*)$/)
     ) {
       logger.log('error', {
-        error: ERROR_MESSAGES.INVALID_TEACHER_ID,
+        error: ERROR_MESSAGES.INVALID_TEACHER_ID_FILTER,
       });
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .json({ error: ERROR_MESSAGES.INVALID_TEACHER_ID });
+        .json({ error: ERROR_MESSAGES.INVALID_TEACHER_ID_FILTER });
     } else filters.teacherIds = filters.teacherIds.trim().split(',');
   }
 
