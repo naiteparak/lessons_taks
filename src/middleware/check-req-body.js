@@ -65,5 +65,15 @@ export const checkReqBody = function (req, res, next) {
       .status(STATUS_CODES.BAD_REQUEST)
       .json({ error: ERROR_MESSAGES.PROVIDE_ALL_DATA });
   }
+
+  if (!Array.isArray(reqBody.teacherIds) || !Array.isArray(reqBody.days)) {
+    logger.log('error', {
+      error: ERROR_MESSAGES.INVALID_TEACHERS_IDS_OR_DAYS,
+    });
+    return res
+      .status(STATUS_CODES.BAD_REQUEST)
+      .json({ error: ERROR_MESSAGES.INVALID_TEACHERS_IDS_OR_DAYS });
+  }
+
   next();
 };

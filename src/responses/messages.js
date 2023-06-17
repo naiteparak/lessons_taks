@@ -9,4 +9,7 @@ export const ERROR_MESSAGES = {
   LESSON_COUNT: 'Lessons count can not exceed 300.',
   INVALID_DATES_INTERVAL:
     'Dates interval can not be greater than one year or less than one day.',
+  PROVIDE_ALL_DATA: 'You must provide all the data.',
+  INVALID_TEACHERS_IDS_OR_DAYS:
+    'Teachers ids and days will be array of numbers',
 };
