@@ -1,4 +1,5 @@
-import { knexConfig as knex } from '../config/knex-config.js';
+import { knexConfig as knex } from '../configs/knex-config.js';
+import { calculateDates } from '../utils/calculate-dates.js';
 
 class AppService {
   async getLessons(filters, page = 1, lessonsPerPage = 5) {
@@ -52,6 +53,53 @@ class AppService {
     }
 
     return query;
+  }
+
+  async createLessons(
+    teacherIds,
+    title,
+    days,
+    firstDate,
+    lessonsCount,
+    lastDate,
+  ) {
+    const generatedDates = calculateDates(
+      days,
+      firstDate,
+      lastDate,
+      lessonsCount,
+    );
+
+    const lessonRows = generatedDates.map((date) => {
+      return {
+        date,
+        title,
+        status: 0,
+      };
+    });
+
+    const insertedLessons = await knex
+      .batchInsert('lessons', lessonRows, lessonRows.length)
+      .returning('id');
+
+    const lessonTeacherRows = [];
+
+    for (const lesson of insertedLessons) {
+      for (const teacherId of teacherIds) {
+        lessonTeacherRows.push({
+          lesson_id: lesson.id,
+          teacher_id: teacherId,
+        });
+      }
+    }
+
+    await knex.batchInsert(
+      'lesson_teachers',
+      lessonTeacherRows,
+      lessonTeacherRows.length,
+    );
+
+    return insertedLessons;
   }
 }
 

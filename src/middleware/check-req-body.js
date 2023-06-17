@@ -79,11 +79,11 @@ export const checkReqBody = async function (req, res, next) {
   for (const id of reqBody.teacherIds) {
     if (!(await checkTeacherId('teachers', id))) {
       logger.log('error', {
-        error: `${ERROR_MESSAGES.INVALID_TEACHER_ID} ${id}`,
+        error: `${ERROR_MESSAGES.INVALID_TEACHER_ID}${id}`,
       });
       return res
         .status(STATUS_CODES.BAD_REQUEST)
-        .json({ error: `${ERROR_MESSAGES.INVALID_TEACHER_ID} ${id}` });
+        .json({ error: `${ERROR_MESSAGES.INVALID_TEACHER_ID}${id}` });
     }
   }
 
